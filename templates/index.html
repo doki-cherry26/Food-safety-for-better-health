@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Food Recognition</title>
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
+}
+
+.container{
+display:flex;
+padding:20px;
+}
+
+.left,.center,.right{
+padding:20px;
+}
+
+.left{
+width:25%;
+background:#111;
+border-radius:10px;
+text-align:center;
+}
+
+.center{
+width:45%;
+text-align:center;
+}
+
+.right{
+width:30%;
+background:#1c1c1c;
+border-radius:10px;
+padding:20px;
+overflow-y:auto;
+height:650px;
+}
+
+button{
+padding:8px 15px;
+margin:8px;
+border:none;
+border-radius:6px;
+background:#00f5d4;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#00bbf9;
+}
+
+.model-box{
+display:inline-block;
+padding:10px 20px;
+margin:5px;
+background:#00f5d4;
+color:black;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.model-box input{
+display:none;
+}
+
+.model-box input:checked + span{
+background:#00bbf9;
+color:white;
+padding:10px 20px;
+border-radius:10px;
+}
+
+.class-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:6px;
+margin-top:10px;
+}
+
+.class-grid label{
+background:#00f5d4;
+color:black;
+padding:6px;
+border-radius:6px;
+cursor:pointer;
+font-size:13px;
+}
+
+.class-grid input{
+margin-right:5px;
+}
+
+img.preview{
+margin-top:15px;
+width:250px;
+border-radius:10px;
+}
+
+.profile-img{
+width:150px;
+border-radius:50%;
+border:3px solid #00f5d4;
+margin-bottom:10px;
+}
+
+.square{
+background:#00f5d4;
+color:black;
+padding:20px;
+border-radius:15px;
+font-weight:bold;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LEFT PANEL -->
+<div class="left">
+<img src="{{ url_for('static', filename='photo.jpg') }}" class="profile-img">
+<h2>Doki Charishma</h2>
+<h4>AI Intern at The Skill Union</h4>
+<hr>
+<h4> Skills </h4>
+SQL<br>
+Python<br>
+Machine Learning<br>
+Deep Learning<br>
+NLP
+</div>
+
+<!-- CENTER PANEL -->
+<div class="center">
+
+<h1>🍽 AI Food Recognition</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+<input type="file" name="file" required><br><br>
+
+<h3>Select Model</h3>
+
+<label class="model-box">
+<input type="radio" name="model" value="CNN"
+{% if selected_model=="CNN" %}checked{% endif %}>
+<span>CNN</span>
+</label>
+
+<label class="model-box">
+<input type="radio" name="model" value="VGG16"
+{% if selected_model=="VGG16" %}checked{% endif %}>
+<span>VGG16</span>
+</label>
+
+<label class="model-box">
+<input type="radio" name="model" value="ResNet"
+{% if selected_model=="ResNet" %}checked{% endif %}>
+<span>ResNet</span>
+</label>
+
+<br><br>
+
+<button type="submit" name="predict_btn">Predict</button>
+
+</form>
+
+{% if image_path %}
+<h3>Uploaded Image</h3>
+<img src="{{ image_path }}" class="preview">
+{% endif %}
+
+{% if prediction %}
+<h3>Predicted Class: {{ prediction }}</h3>
+<h4>Confidence: {{ confidence|round(2) }}%</h4>
+{% endif %}
+
+</div>
+
+<!-- RIGHT PANEL -->
+<!-- RIGHT PANEL -->
+<div class="right">
+
+{% if not prediction %}
+
+<h3>Select Actual Class</h3>
+<hr>
+
+<div class="class-grid">
+{% for cls in class_names %}
+<label>
+<input type="radio" name="actual_class" value="{{ cls }}"
+{% if actual_class==cls %}checked{% endif %}>
+{{ cls }}
+</label>
+{% endfor %}
+</div>
+
+{% else %}
+
+<h3>Model Performance</h3>
+<hr>
+
+<h4>Test Accuracy: {{ accuracy }}%</h4>
+
+<h4>Classification Report ({{ prediction }})</h4>
+Precision: {{ precision }}% <br>
+Recall: {{ recall }}% <br>
+F1 Score: {{ f1_score }}% <br>
+
+{% if matrix %}
+<h4>Confusion Matrix</h4>
+<div class="square">
+TN: {{ matrix[0][0] }} |
+FP: {{ matrix[0][1] }} <br><br>
+FN: {{ matrix[1][0] }} |
+TP: {{ matrix[1][1] }}
+</div>
+{% endif %}
+
+{% if nutrients %}
+
+<hr>
+<h4>Nutrient Details</h4>
+
+{% for key,value in nutrients.items() %}
+{{ key }} : {{ value }} <br>
+{% endfor %}
+
+<hr>
+<h4>Doctor Recommendation</h4>
+
+{% set calories = nutrients.get('calories', 0) %}
+{% set fat = nutrients.get('fat', 0) %}
+
+{% if calories < 300 and fat < 15 %}
+<div class="square" style="background:#28a745;color:white;">
+✅ Doctor Recommended: Good for Consumption
+</div>
+{% else %}
+<div class="square" style="background:#dc3545;color:white;">
+❌ Doctor Recommended: Not Recommended Frequently
+</div>
+{% endif %}
+
+{% endif %}
+
+{% endif %}
+
+</div>
+
+
+</div>
+
+</div>
+</body>
+</html>
