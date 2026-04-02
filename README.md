@@ -1,35 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Food Safety for Better Health</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    line-height: 1.6;
-    background-color: #f9f9f9;
-    color: #333;
-}
-h1, h2, h3 {
-    color: #0a66c2;
-}
-ul {
-    margin-left: 20px;
-}
-.section {
-    margin-bottom: 30px;
-}
-.box {
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
-}
-</style>
-</head>
-
-<body>
 
 <h1>🍽️ Food Safety for Better Health</h1>
 
